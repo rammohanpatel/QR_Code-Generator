@@ -10,25 +10,41 @@
 <body>
     <div class="container">
         <p>Enter your text or URL</p>
-        <input type="text" placeholder="Text or URL" id="qrtext">
+        <input type="text" placeholder="Text or URL" id="qrtext" onkeypress="handleKeyPress(event)">
         <div id="Imgbox">
         <img src="" id="qrImage">
         </div>
         <button onclick="generateQR()">Generate QR-Code</button>
-
+        <div>
+            <button id="downloadbtn">Download</button>
+        </div>
     </div>
     
     <script>
         let imgbox=document.getElementById("Imgbox")
         let qrImage=document.getElementById("qrImage")
         let qrtext=document.getElementById("qrtext")
+        let download = document.getElementById("downloadbtn");
 
         function generateQR(){
             if(qrtext.value.length > 0){
                qrImage.src=" https://api.qrserver.com/v1/create-qr-code/?size=150x150&data="+qrtext.value;
-               Imgbox.classlist.add("show-img");
+               imgbox.classlist.add("show-img");
             }
         }
+        function handleKeyPress(event){
+            if(event.keyCode === 13){
+                generateQR();
+            }
+        }
+        download.addEventListener("click",async()=>{
+           const response = await fetch(qrImage.src);
+           const blob = await response.blob();
+           const downloadLink = document.createElement("a");
+           downloadLink.href= URL.createObjectURL(blob);
+           downloadLink.download = "qrcode.jpg";
+           downloadLink.click();
+        })
     </script>
 </body>
 </html>
